@@ -1,0 +1,126 @@
+package zakat3;
+
+import java.util.Scanner;
+
+class Pemberi {
+    private String nama;
+    private int jumlahJiwa;
+    private double harta;
+    private double nisab;
+    private double hargaBeras;
+
+    public Pemberi(String nama, int jumlahJiwa, double harta, double nisab, double hargaBeras) {
+        this.nama = nama;
+        this.jumlahJiwa = jumlahJiwa;
+        this.harta = harta;
+        this.nisab = nisab;
+        this.hargaBeras = hargaBeras;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public int getJumlahJiwa() {
+        return jumlahJiwa;
+    }
+
+    public double getHarta() {
+        return harta;
+    }
+
+    public double getNisab() {
+        return nisab;
+    }
+
+    public double getHargaBeras() {
+        return hargaBeras;
+    }
+}
+
+public class TugasZakat {
+    private static final double ZAKAT_FITRAH_PER_JIWA = 2.5; // in kg of rice
+    private static final double ZAKAT_MAL_RATE = 0.025; // 2.5%
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
+
+        System.out.println("========================================");
+        System.out.println("   Selamat datang di Badan Penyalur Zakat ");
+        System.out.println("========================================");
+
+        while (running) {
+            System.out.println("\nPilih Zakat yang ingin Dihitung");
+            System.out.println("1. Zakat Fitrah");
+            System.out.println("2. Zakat Mal");
+            System.out.println("3. keluar");
+
+            System.out.print("Silakan Pilih Opsi: ");
+            int pilihan = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (pilihan) {
+                case 1:
+                    handleZakatFitrah(scanner);
+                    break;
+
+                case 2:
+                    handleZakatMal(scanner);
+                    break;
+
+                case 3:
+                    running = false;
+                    System.out.println("========================================");
+                    System.out.println("Terima kasih telah mempercayakan zakat Anda kepada kami.");
+                    break;
+
+                default:
+                    System.out.println("Pilihan tidak valid. Silakan coba lagi.");
+                    break;
+            }
+            System.out.println("By Ibnu");
+        }
+        scanner.close();
+    }
+
+    private static void handleZakatFitrah(Scanner scanner) {
+        System.out.print("Masukkan nama pemberi: ");
+        String namaPemberiFitrah = scanner.nextLine();
+        System.out.print("Masukan jumlah jiwa (orang): ");
+        int jumlahJiwa = scanner.nextInt();
+        System.out.print("Masukan harga beras per kilogram: ");
+        double hargaBeras = scanner.nextDouble();
+
+        if (jumlahJiwa < 0 || hargaBeras < 0) {
+            System.out.println("Jumlah jiwa dan harga beras harus positif.");
+            return;
+        }
+
+        Pemberi pemberiFitrah = new Pemberi(namaPemberiFitrah, jumlahJiwa, 0, 0, hargaBeras);
+        double zakatFitrah = pemberiFitrah.getJumlahJiwa() * ZAKAT_FITRAH_PER_JIWA * pemberiFitrah.getHargaBeras();
+        System.out.println("Zakat fitrah yang harus dibayar oleh " + pemberiFitrah.getNama() + " : Rp" + zakatFitrah);
+    }
+
+    private static void handleZakatMal(Scanner scanner) {
+        System.out.print("Masukkan nama pemberi: ");
+        String namaPemberiMal = scanner.nextLine();
+        System.out.print("Masukan total harta (Dalam Rupiah): ");
+        double totalHarta = scanner.nextDouble();
+        System.out.print("Masukan nisab (misalnya 85 gram emas dalam Rupiah): ");
+        double nisab = scanner.nextDouble();
+
+        if (totalHarta < 0 || nisab < 0) {
+            System.out.println("Total harta dan nisab harus positif.");
+            return;
+        }
+
+        Pemberi pemberiMal = new Pemberi(namaPemberiMal, 0, totalHarta, nisab, 0);
+        if (pemberiMal.getHarta() >= pemberiMal.getNisab()) {
+            double zakatMal = pemberiMal.getHarta() * ZAKAT_MAL_RATE;
+            System.out.println("Zakat Mal yang harus dibayar oleh " + pemberiMal.getNama() + " : Rp" + zakatMal);
+        } else {
+            System.out.println("Total harta tidak mencapai nisab, tidak ada zakat yang harus dibayar.");
+        }
+    }
+}
